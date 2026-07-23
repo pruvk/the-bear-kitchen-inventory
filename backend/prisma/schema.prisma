@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  HEAD_CHEF
+  SOUS_CHEF
+  COOK
+}
+
+enum Measurement {
+  KILOGRAM
+  LITERS
+  GRAM
+  PIECE
+}
+
+enum Category {
+  PRODUCE
+  MEAT
+  DAIRY
+  DRY_GOODS
+  EQUIPMENT
+}
+
+model User {
+  id   String @id @default(uuid())
+  name String
+  role Role   @default(COOK)
+}
+
+model Location {
+  id    String  @id @default(uuid())
+  name  String
+  stock Stock[]
+}
+
+model Item {
+  id          String      @id @default(uuid())
+  name        String
+  category    Category
+  measurement Measurement
+  stock       Stock[]
+}
+
+model Stock {
+  id       String @id @default(uuid())
+  quantity Float
+
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id])
+
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id])
+
+  updatedAt DateTime @updatedAt
+}
